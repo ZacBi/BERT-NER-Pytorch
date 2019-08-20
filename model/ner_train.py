@@ -12,6 +12,7 @@ Attention: 1.remove the usage of XLM;
 
 import logging
 import os
+import sys
 import random
 import glob
 
@@ -31,11 +32,16 @@ from pytorch_transformers import (WEIGHTS_NAME, BertConfig,
                                   XLNetForQuestionAnswering, XLNetTokenizer)
 from pytorch_transformers import AdamW, WarmupLinearSchedule
 
-# TODO: modify this package
-# from model.dataprocess_ner import *
-# from model.args import *
-# from model.sequence_eval import *
-# from model.args_ner import get_train_args
+sys.path.append('/home/ubuntu/workspace/github/BERT-NER-Pytorch')
+
+# os.environ[
+#     'TASK_DATA_PATH'] = '/home/ubuntu/workspace/github/BERT-NER-Pytorch/data/msra_ner'
+# os.environ[
+#     'MODEL_PATH'] = '/home/ubuntu/workspace/data/model-zoo/ernie_base_128_pytorch'
+# os.environ[
+#     'OUTPUT_DIR'] = '/home/ubuntu/workspace/github/BERT-NER-Pytorch/outputs'
+# os.environ[
+#     'WORKSPACE'] = '/home/ubuntu/workspace/github/BERT-NER-Pytorch/model'
 
 from model.dataprocess import *
 from model.sequence_eval import *
@@ -278,7 +284,7 @@ def evaluate(args, model, tokenizer, prefix=""):
 
             outputs = model(**inputs)
             loss, scores = outputs[:2]
-            
+
             input_mask = batch[1]
             label_ids = batch[3]
             example_indices = batch[4]
@@ -317,6 +323,8 @@ def load_and_cache_examples(args,
             str(args.max_seq_length)))
     if os.path.exists(cached_features_file
                       ) and not args.overwrite_cache and not output_examples:
+    # if os.path.exists(cached_features_file
+    #                   ) and not args.overwrite_cache:
         logger.info("Loading features from cached file %s",
                     cached_features_file)
         features = torch.load(cached_features_file)

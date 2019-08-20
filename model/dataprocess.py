@@ -138,7 +138,7 @@ def convert_examples_to_features(examples: List[InputExample],
             logger.info("input_mask: {}".format(" ".join(
                 [str(x) for x in input_mask])))
             if label_ids:
-                logger.info("input_mask: {}".format(" ".join(
+                logger.info("label_ids: {}".format(" ".join(
                     [str(x) for x in label_ids])))
 
         features.append(
@@ -514,4 +514,3 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
             writer.write(json.dumps(scores_diff_json, indent=4) + "\n")
 
     return all_predictions
-

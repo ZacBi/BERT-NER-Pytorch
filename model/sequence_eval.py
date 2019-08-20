@@ -22,7 +22,7 @@ import argparse
 import numpy as np
 import multiprocessing
 
-from dataprocess_ner import convert_examples_to_features
+from model.dataprocess import convert_examples_to_features
 
 import paddle
 import paddle.fluid as fluid
@@ -33,7 +33,7 @@ from torch.utils.data import TensorDataset, SequentialSampler, DataLoader
 # from model.ernie import ErnieModel
 
 
-# TODO: a temporary func, annotate it when inneed
+# TODO: a temporary func, annotate it when indeed
 def output_correct_example(data_dir):
     pass
 

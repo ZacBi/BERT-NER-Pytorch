@@ -232,6 +232,21 @@ def train(args, train_dataset, model, tokenizer):
                         args, os.path.join(ckpt_save_dir, 'training_args.bin'))
                     logger.info(f"Saving model checkpoint to {ckpt_save_dir}")
 
+                if results['F1'] > best_f1:
+                    best_f1 = results['F1']
+                    best_save_dir = os.path.join(args.output_dir, 'best')
+                    if not os.path.exists(best_save_dir):
+                        os.makedirs(best_save_dir)
+                    model_to_save = model.module if hasattr(
+                        model, 'module'
+                    ) else model  # Take care of distributed/parallel training
+                    model_to_save.save_pretrained(best_save_dir)
+                    torch.save(
+                        args, os.path.join(best_save_dir, 'training_args.bin'))
+                    logger.info(
+                        f"Saving model checkpoint to {best_save_dir} with best F1: {best_f1}"
+                    )
+
             if args.max_steps > 0 and global_step > args.max_steps:
                 epoch_iterator.close()
                 break
@@ -483,34 +498,18 @@ def main(args):
 
     # Evaluation - we can ask to evaluate all the checkpoints (sub-directories) in a directory
     results = {}
-    if args.do_eval and args.local_rank in [-1, 0]:
-        checkpoints = [args.output_dir]
-        if args.eval_all_checkpoints:
-            checkpoints = list(
-                os.path.dirname(c) for c in sorted(
-                    glob.glob(args.output_dir + '/**/' + WEIGHTS_NAME,
-                              recursive=True)))
-            logging.getLogger("pytorch_transformers.modeling_utils").setLevel(
-                logging.WARN)  # Reduce model loading logs
+    if args.do_test and args.local_rank in [-1, 0]:
+        best_save_dir = os.path.join(args.output_dir, 'best')
+        model = model_class.from_pretrained(best_save_dir)
+        model.to(args.device)
+        # Evaluate
+        result = evaluate(args, model, tokenizer, prefix=global_step)
 
-        logger.info("Evaluate the following checkpoints: %s", checkpoints)
-
-        for checkpoint in checkpoints:
-            # Reload the model
-            global_step = checkpoint.split(
-                '-')[-1] if len(checkpoints) > 1 else ""
-            model = model_class.from_pretrained(checkpoint)
-            model.to(args.device)
-
-            # Evaluate
-            result = evaluate(args, model, tokenizer, prefix=global_step)
-
-            result = dict(
-                (k + ('_{}'.format(global_step) if global_step else ''), v)
-                for k, v in result.items())
-            results.update(result)
-
-    logger.info("Results: {}".format(results))
+        result = dict(
+            (k + ('_{}'.format(global_step) if global_step else ''), v)
+            for k, v in result.items())
+        results.update(result)
+    logger.info("Results of best checkpoint: {}".format(results))
 
     return results
 

@@ -79,7 +79,7 @@ def get_train_args(MODEL_CLASSES):
         # default=False,
         help="Whether to run training.")
     parser.add_argument(
-        "--do_eval",
+        "--do_test",
         action='store_true',
         # default=False,
         help="Whether to run eval on the dev set without or after train stage."

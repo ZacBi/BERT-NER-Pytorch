@@ -3,7 +3,9 @@ Finetuning the library models for NER on MSRA-NER
 Author: ZacBi
 Version: 0.0.2
 Date: 2019/08/06
-Attention: remove the usage of XLM
+Attention: 1.remove the usage of XLM;
+           2. the reason why not reach SOTA maybe the tokenizer?
+
 """
 # TODO: study the doc
 # TODO: save the best performance checkpoint and test on test file finally
@@ -35,10 +37,9 @@ from pytorch_transformers import AdamW, WarmupLinearSchedule
 # from model.sequence_eval import *
 # from model.args_ner import get_train_args
 
-from dataprocess_ner import *
-from args import *
-from sequence_eval import *
-from args_ner import get_train_args
+from model.dataprocess import *
+from model.sequence_eval import *
+from model.args import get_train_args
 
 logger = logging.getLogger(__name__)
 
@@ -204,7 +205,8 @@ def train(args, train_dataset, model, tokenizer):
                             logger.info(f'{key}/train: {value:.4}')
                     tb_writer.add_scalar('LR/train',
                                          scheduler.get_lr()[0], global_step)
-                    tb_writer.add_scalar('Loss/train', (tr_loss - logging_loss) /
+                    tb_writer.add_scalar('Loss/train',
+                                         (tr_loss - logging_loss) /
                                          args.eval_steps, global_step)
                     logging_loss = tr_loss
 
@@ -213,7 +215,7 @@ def train(args, train_dataset, model, tokenizer):
                 ] and args.save_steps > 0 and global_step % args.save_steps == 0:
                     # Save model checkpoint
                     ckpt_save_dir = os.path.join(args.output_dir,
-                                              f'checkpoint-{global_step}')
+                                                 f'checkpoint-{global_step}')
                     if not os.path.exists(ckpt_save_dir):
                         os.makedirs(ckpt_save_dir)
                     model_to_save = model.module if hasattr(
@@ -273,14 +275,14 @@ def evaluate(args, model, tokenizer, prefix=""):
                 None if args.model_type == 'xlm' else batch[2],
                 'labels': batch[3]
             }
-            input_mask = batch[1]
-            label_ids = batch[3]
-            example_indices = batch[4]
 
             outputs = model(**inputs)
             loss, scores = outputs[:2]
-
-            # np_infers with shape (bath_size:1, max_seq_len)
+            
+            input_mask = batch[1]
+            label_ids = batch[3]
+            example_indices = batch[4]
+            # np_infers with shape (bath_size=1, max_seq_len)
             np_infers = scores.max(-1)[-1].cpu().numpy()
             np_labels = label_ids.cpu().numpy()
             np_lens = input_mask.sum(-1).cpu().numpy()
@@ -303,8 +305,8 @@ def load_and_cache_examples(args,
                             evaluate=False,
                             output_examples=False):
     if args.local_rank not in [-1, 0]:
-        torch.distributed.barrier(
-        )  # Make sure only the first process in distributed training process the dataset, and the others will use the cache
+        torch.distributed.barrier()
+    # Make sure only the first process in distributed training process the dataset, and the others will use the cache
 
     # Load data features from cache or dataset file
     input_file = args.predict_file if evaluate else args.train_file

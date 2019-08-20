@@ -10,13 +10,6 @@ from typing import Union, List, Dict
 
 import torch
 
-logging.basicConfig(
-    format='%(asctime)s - %(levelname)s - %(name)s - %(message)s',
-    datefmt='%m/%d/%Y %H:%M:%S',
-    level=logging.INFO)
-logger = logging.getLogger(__name__)
-
-
 class InputExample(object):
     """A single training/test example for simple sequence classification."""
     def __init__(self, unique_id, text_a, text_b=None, label: str = None):
@@ -123,7 +116,6 @@ def convert_examples_to_features(examples: List[InputExample],
         input_ids = tokenizer.convert_tokens_to_ids(tokens)
         input_mask = [1] * len(input_ids)
         input_mask[0], input_mask[-1] = 0, 0
-
 
         # Zero-pad up to the sequence length.
         while len(input_ids) < max_seq_len:
@@ -522,3 +514,4 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
             writer.write(json.dumps(scores_diff_json, indent=4) + "\n")
 
     return all_predictions
+

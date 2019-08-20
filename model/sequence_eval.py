@@ -32,11 +32,10 @@ from torch.utils.data import TensorDataset, SequentialSampler, DataLoader
 
 # from model.ernie import ErnieModel
 
+
 # TODO: a temporary func, annotate it when inneed
 def output_correct_example(data_dir):
     pass
-
-
 
 
 def create_model(args, pyreader_name, ernie_config, is_prediction=False):
@@ -234,13 +233,13 @@ def calculate_f1(num_label, num_infer, num_correct):
 
 
 def evaluate_on_msra(model,
-             processor,
-             args,
-             label_list,
-             tokenizer,
-             device,
-             train_prhase: bool = True,
-             show_example: bool = False):
+                     processor,
+                     args,
+                     label_list,
+                     tokenizer,
+                     device,
+                     train_prhase: bool = True,
+                     show_example: bool = False):
     if train_prhase:
         eval_examples = processor.get_dev_examples(args.data_dir)
     else:
@@ -254,8 +253,8 @@ def evaluate_on_msra(model,
                                  dtype=torch.long)
     all_input_mask = torch.tensor([f.input_mask for f in eval_features],
                                   dtype=torch.long)
-    all_input_type_ids = torch.tensor([f.input_type_ids for f in eval_features],
-                                   dtype=torch.long)
+    all_input_type_ids = torch.tensor(
+        [f.input_type_ids for f in eval_features], dtype=torch.long)
     all_label_ids = torch.tensor([f.label_ids for f in eval_features],
                                  dtype=torch.long)
     eval_data = TensorDataset(all_input_ids, all_input_type_ids, all_label_ids,

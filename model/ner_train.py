@@ -32,7 +32,7 @@ from pytorch_transformers import (WEIGHTS_NAME, BertConfig,
                                   XLNetForQuestionAnswering, XLNetTokenizer)
 from pytorch_transformers import AdamW, WarmupLinearSchedule
 
-sys.path.append('/home/ubuntu/workspace/github/BERT-NER-Pytorch')
+sys.path.append('/home/ubuntu/workspace/github/ERNIE-NER-Pytorch')
 
 # os.environ[
 #     'TASK_DATA_PATH'] = '/home/ubuntu/workspace/github/BERT-NER-Pytorch/data/msra_ner'
@@ -205,6 +205,22 @@ def train(args, train_dataset, model, tokenizer):
                     # Only evaluate when single GPU otherwise metrics may not average well
                     if args.local_rank == -1 and args.evaluate_during_training:
                         results = evaluate(args, model, tokenizer)
+
+                        if results and results['F1'] > best_f1:
+                            best_f1 = results['F1']
+                            best_save_dir = os.path.join(args.output_dir, 'best')
+                            if not os.path.exists(best_save_dir):
+                                os.makedirs(best_save_dir)
+                            model_to_save = model.module if hasattr(
+                                model, 'module'
+                            ) else model  # Take care of distributed/parallel training
+                            model_to_save.save_pretrained(best_save_dir)
+                            torch.save(
+                                args, os.path.join(best_save_dir, 'training_args.bin'))
+                            logger.info(
+                                f"Saving model checkpoint to {best_save_dir} with best F1: {best_f1}"
+                            )
+
                         for key, value in results.items():
                             tb_writer.add_scalar(f'{key}/train', value,
                                                  global_step)
@@ -231,21 +247,6 @@ def train(args, train_dataset, model, tokenizer):
                     torch.save(
                         args, os.path.join(ckpt_save_dir, 'training_args.bin'))
                     logger.info(f"Saving model checkpoint to {ckpt_save_dir}")
-
-                if results['F1'] > best_f1:
-                    best_f1 = results['F1']
-                    best_save_dir = os.path.join(args.output_dir, 'best')
-                    if not os.path.exists(best_save_dir):
-                        os.makedirs(best_save_dir)
-                    model_to_save = model.module if hasattr(
-                        model, 'module'
-                    ) else model  # Take care of distributed/parallel training
-                    model_to_save.save_pretrained(best_save_dir)
-                    torch.save(
-                        args, os.path.join(best_save_dir, 'training_args.bin'))
-                    logger.info(
-                        f"Saving model checkpoint to {best_save_dir} with best F1: {best_f1}"
-                    )
 
             if args.max_steps > 0 and global_step > args.max_steps:
                 epoch_iterator.close()

@@ -1,15 +1,15 @@
-export TASK_DATA_PATH=/home/ubuntu/workspace/github/BERT-NER-Pytorch/data/msra_ner
+export TASK_DATA_PATH=/home/ubuntu/workspace/github/ERNIE-NER-Pytorch/data/msra_ner
 export MODEL_PATH=/home/ubuntu/workspace/data/model-zoo/ernie_base_128_pytorch
-export OUTPUT_DIR=/home/ubuntu/workspace/github/BERT-NER-Pytorch/outputs
-export WORKSPACE=/home/ubuntu/workspace/github/BERT-NER-Pytorch/model
+export OUTPUT_DIR=/home/ubuntu/workspace/github/ERNIE-NER-Pytorch/outputs
+export WORKSPACE=/home/ubuntu/workspace/github/ERNIE-NER-Pytorch/model
 
 python3 ${WORKSPACE}/ner_train.py \
     --train_file ${TASK_DATA_PATH}/train.tsv \
     --predict_file ${TASK_DATA_PATH}/dev.tsv \
     --model_type bert \
     --model_name_or_path ${MODEL_PATH} \
-    --output_dir ${OUTPUT_DIR}/experiments/exp2_nodecay \
-    --log_dir ${OUTPUT_DIR}/experiments/exp2_nodecay/runs \
+    --output_dir ${OUTPUT_DIR}/experiments/exp3 \
+    --log_dir ${OUTPUT_DIR}/experiments/exp3/runs \
     --task_name msra\
     --num_labels 7 \
     --max_seq_len 256 \

@@ -8,8 +8,8 @@ python3 ${WORKSPACE}/ner_train.py \
     --predict_file ${TASK_DATA_PATH}/dev.tsv \
     --model_type bert \
     --model_name_or_path ${MODEL_PATH} \
-    --output_dir ${OUTPUT_DIR}/experiments/exp2 \
-    --log_dir ${OUTPUT_DIR}/experiments/exp2/runs \
+    --output_dir ${OUTPUT_DIR}/experiments/exp2_nodecay \
+    --log_dir ${OUTPUT_DIR}/experiments/exp2_nodecay/runs \
     --task_name msra\
     --num_labels 7 \
     --max_seq_len 256 \

@@ -95,8 +95,8 @@ def train(args, train_dataset, model, tokenizer):
     # Prepare optimizer and schedule (linear warmup and decay)
     # TODO: maybe no_decay is empty in ernie of paddle version,
     # so here we define no_decay as None
-    # no_decay = ['bias', 'LayerNorm.weight']
-    no_decay = []
+    no_decay = ['bias', 'LayerNorm.weight']
+    # n: name, p: para, nd: no_decay
     optimizer_grouped_parameters = [{
         'params': [
             p for n, p in model.named_parameters()
@@ -323,8 +323,6 @@ def load_and_cache_examples(args,
             str(args.max_seq_length)))
     if os.path.exists(cached_features_file
                       ) and not args.overwrite_cache and not output_examples:
-    # if os.path.exists(cached_features_file
-    #                   ) and not args.overwrite_cache:
         logger.info("Loading features from cached file %s",
                     cached_features_file)
         features = torch.load(cached_features_file)
@@ -479,8 +477,8 @@ def main(args):
         torch.save(args, os.path.join(final_save_dir, 'training_args.bin'))
 
         # Load a trained model and vocabulary that you have fine-tuned
-        model = model_class.from_pretrained(args.output_dir)
-        tokenizer = tokenizer_class.from_pretrained(args.output_dir)
+        model = model_class.from_pretrained(final_save_dir)
+        tokenizer = tokenizer_class.from_pretrained(final_save_dir)
         model.to(args.device)
 
     # Evaluation - we can ask to evaluate all the checkpoints (sub-directories) in a directory

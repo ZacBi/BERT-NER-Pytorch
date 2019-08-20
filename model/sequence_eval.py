@@ -38,66 +38,6 @@ def output_correct_example(data_dir):
     pass
 
 
-def create_model(args, pyreader_name, ernie_config, is_prediction=False):
-    pyreader = fluid.layers.py_reader(
-        capacity=50,
-        shapes=[[-1, args.max_seq_len, 1], [-1, args.max_seq_len, 1],
-                [-1, args.max_seq_len, 1], [-1, args.max_seq_len, 1],
-                [-1, args.max_seq_len, 1], [-1, 1]],
-        dtypes=['int64', 'int64', 'int64', 'float32', 'int64', 'int64'],
-        lod_levels=[0, 0, 0, 0, 0, 0],
-        name=pyreader_name,
-        use_double_buffer=True)
-
-    (src_ids, sent_ids, pos_ids, input_mask, labels,
-     seq_lens) = fluid.layers.read_file(pyreader)
-
-    ernie = ErnieModel(src_ids=src_ids,
-                       position_ids=pos_ids,
-                       sentence_ids=sent_ids,
-                       input_mask=input_mask,
-                       config=ernie_config,
-                       use_fp16=args.use_fp16)
-
-    enc_out = ernie.get_sequence_output()
-    logits = fluid.layers.fc(
-        input=enc_out,
-        size=args.num_labels,
-        num_flatten_dims=2,
-        param_attr=fluid.ParamAttr(
-            name="cls_seq_label_out_w",
-            initializer=fluid.initializer.TruncatedNormal(scale=0.02)),
-        bias_attr=fluid.ParamAttr(name="cls_seq_label_out_b",
-                                  initializer=fluid.initializer.Constant(0.)))
-
-    ret_labels = fluid.layers.reshape(x=labels, shape=[-1, 1])
-    ret_infers = fluid.layers.reshape(x=fluid.layers.argmax(logits, axis=2),
-                                      shape=[-1, 1])
-
-    labels = fluid.layers.flatten(labels, axis=2)
-    ce_loss, probs = fluid.layers.softmax_with_cross_entropy(
-        logits=fluid.layers.flatten(logits, axis=2),
-        label=labels,
-        return_softmax=True)
-    loss = fluid.layers.mean(x=ce_loss)
-
-    if args.use_fp16 and args.loss_scaling > 1.0:
-        loss *= args.loss_scaling
-
-    graph_vars = {
-        "loss": loss,
-        "probs": probs,
-        "labels": ret_labels,
-        "infers": ret_infers,
-        "seq_lens": seq_lens
-    }
-
-    for k, v in graph_vars.items():
-        v.persistable = True
-
-    return pyreader, graph_vars
-
-
 def chunk_eval(np_labels, np_infers, np_lens, tag_num, dev_count=1):
 
     # All the span below, i.e., cur_chunk={'st': idx, 'en', idx + 1, 'type': tag_type},

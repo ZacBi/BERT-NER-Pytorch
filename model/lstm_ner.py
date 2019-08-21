@@ -94,7 +94,8 @@ class BERT_BiLSTM_CRF(nn.Module):
                 # scores.
                 alphas_t.append(log_sum_exp(next_tag_var).view(1))
             forward_var = torch.cat(alphas_t).view(1, -1)
-        terminal_var = forward_var + self.transitions[self.tag_to_idx[STOP_TAG]]
+        terminal_var = forward_var + self.transitions[
+            self.tag_to_idx[STOP_TAG]]
         alpha = log_sum_exp(terminal_var)
         return alpha
 
@@ -152,7 +153,8 @@ class BERT_BiLSTM_CRF(nn.Module):
             backpointers.append(bptrs_t)
 
         # Transition to STOP_TAG
-        terminal_var = forward_var + self.transitions[self.tag_to_idx[STOP_TAG]]
+        terminal_var = forward_var + self.transitions[
+            self.tag_to_idx[STOP_TAG]]
         best_tag_id = argmax(terminal_var)
         path_score = terminal_var[0][best_tag_id]
 

@@ -85,4 +85,4 @@ python3 ${WORKSPACE}/ner_train.py \
 ## Future plan
 
 - [ ] Add Bi-LSTM CRF
-- [ ] More pretrain model like XLNet and RoBertA
+- [ ] More pretrain models like XLNet and RoBertA

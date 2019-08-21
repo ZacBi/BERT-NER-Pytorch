@@ -1,9 +1,9 @@
 **/__pycache__
 
 # files
-
+cache*
 
 # folder
-data/
 outputs/
 .vscode
+tmp/

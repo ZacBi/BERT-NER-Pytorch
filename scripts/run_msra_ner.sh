@@ -5,15 +5,15 @@ export WORKSPACE=/home/ubuntu/workspace/github/ERNIE-NER-Pytorch/model
 
 python3 ${WORKSPACE}/ner_train.py \
     --train_file ${TASK_DATA_PATH}/train.tsv \
-    --predict_file ${TASK_DATA_PATH}/dev.tsv \
+    --predict_file ${TASK_DATA_PATH}/test.tsv \
     --model_type bert \
     --model_name_or_path ${MODEL_PATH} \
     --output_dir ${OUTPUT_DIR}/experiments/exp3 \
-    --log_dir ${OUTPUT_DIR}/experiments/exp3/runs \
+    --log_dir ${WORKSPACE}/runs \
     --task_name msra\
     --num_labels 7 \
     --max_seq_len 256 \
-    --do_train \
+    --do_eval \
     --evaluate_during_training \
     --do_lower_case \
     --per_gpu_train_batch_size 16 \

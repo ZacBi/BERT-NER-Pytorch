@@ -4,11 +4,17 @@
 
 ## Experiment
 
-|**Dataset**|MSRA-NER(SIGHAN2006)|
-|:-:|:-:|
-|F1-score||
-|Precision||
-|Recall||
+### Dataset
+
+MSRA-NER(SIGHAN2006)
+
+### Result
+
+Stage|F1-score|Precision|Recall|
+|:-:|:-:|:-:|:-:|
+**Dev**|0.955|0.953|0.957|
+**Test**|0.957|0.955|0.959|
+
 
 &emsp;&emsp;I use tensorboard to record important metric during training and evaluation. You can find the event file in `runs/` folder and look the trend using the command below:
 ```

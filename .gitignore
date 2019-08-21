@@ -1,5 +1,3 @@
-**/__pycache__
-
 # files
 cache*
 
@@ -7,3 +5,4 @@ cache*
 outputs/
 .vscode
 tmp/
+**/__pycache__

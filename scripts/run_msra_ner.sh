@@ -13,7 +13,7 @@ python3 ${WORKSPACE}/ner_train.py \
     --task_name msra\
     --num_labels 7 \
     --max_seq_len 256 \
-    --do_eval \
+    --do_train \
     --evaluate_during_training \
     --do_lower_case \
     --per_gpu_train_batch_size 16 \

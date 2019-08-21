@@ -18,11 +18,11 @@ MSRA-NER(SIGHAN2006)
 | **Test** |  0.957   |   0.955   | 0.959  |
 
 
-&emsp;&emsp;I use tensorboard to record important metric during training and evaluation. You can find the event file in `runs/` folder and look the trend using the command below:
+&emsp;&emsp;I use tensorboard to record important measures during training and evaluation. You can find the event file in `runs/` folder and see the trend using the command below:
 
 `tensorboard --logdir=runs/`
 
-&emsp;&emsp;The graph should like:
+&emsp;&emsp;The graph should be like:
 ![final f1](appendix/final_f1.png)
 
 ### Configuration
@@ -49,7 +49,6 @@ MSRA-NER(SIGHAN2006)
         <td>7.6</td>
     </tr>
 </table>
-
 
 ### Script
 

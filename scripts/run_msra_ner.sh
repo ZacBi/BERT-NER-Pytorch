@@ -1,7 +1,7 @@
-export TASK_DATA_PATH=/home/ubuntu/workspace/github/ERNIE-NER-Pytorch/data/msra_ner
-export MODEL_PATH=/home/ubuntu/workspace/data/model-zoo/ernie_base_128_pytorch
-export OUTPUT_DIR=/home/ubuntu/workspace/github/ERNIE-NER-Pytorch/outputs
-export WORKSPACE=/home/ubuntu/workspace/github/ERNIE-NER-Pytorch/model
+export TASK_DATA_PATH=/
+export MODEL_PATH=/
+export OUTPUT_DIR=/
+export WORKSPACE=/
 
 python3 ${WORKSPACE}/ner_train.py \
     --train_file ${TASK_DATA_PATH}/train.tsv \

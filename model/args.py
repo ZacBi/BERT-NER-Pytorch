@@ -4,8 +4,6 @@ import argparse
 def get_train_args(MODEL_CLASSES):
     parser = argparse.ArgumentParser()
 
-    ## Required parameters
-    # FIXME: change `train_file` to `data_dir`
     parser.add_argument("--train_file",
                         default=None,
                         type=str,
@@ -17,7 +15,6 @@ def get_train_args(MODEL_CLASSES):
         type=str,
         required=True,
         help="MSRA-NER tsv for predictions. E.g., dev.tsv or test.tsv")
-    # FIXME: need for deleting `model_type`
     parser.add_argument("--model_type",
                         default=None,
                         type=str,

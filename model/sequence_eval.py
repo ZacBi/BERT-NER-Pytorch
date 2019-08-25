@@ -30,14 +30,8 @@ import paddle.fluid as fluid
 import torch
 from torch.utils.data import TensorDataset, SequentialSampler, DataLoader
 
+
 # from model.ernie import ErnieModel
-
-
-# TODO: a temporary func, annotate it when indeed
-def output_correct_example(data_dir):
-    pass
-
-
 def chunk_eval(np_labels, np_infers, np_lens, tag_num, dev_count=1):
 
     # All the span below, i.e., cur_chunk={'st': idx, 'en', idx + 1, 'type': tag_type},
@@ -114,7 +108,6 @@ def chunk_eval(np_labels, np_infers, np_lens, tag_num, dev_count=1):
             # + 1 beause we don't need count [CLS]
             # - 2 for the similar reason
             seq_st = base_index + i * max_len + 1
-            # TODO: for I label [CLS] and [SEP] as 'O',
             # and don't caculate the loss for them,
             # i.e., the length is caculated by input_mask,
             # but the elem in the position of input_mask

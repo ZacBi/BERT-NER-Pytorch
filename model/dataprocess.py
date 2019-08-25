@@ -47,7 +47,6 @@ class InputFeatures(object):
         self.label_ids = label_ids
 
 
-# TODO: [x] modify this func for other implementation
 def convert_examples_to_features(examples: List[InputExample],
                                  label_list: List[str],
                                  tokenizer,
@@ -98,7 +97,6 @@ def convert_examples_to_features(examples: List[InputExample],
         label_ids = None
         if example.label:
             label_ids = [label_map[label] for label in example.label]
-            # TODO: remove it!!!
             assert len(label_ids) == len(tokens_a)
             if len(label_ids) > max_seq_len - 2:
                 label_ids = label_ids[:(max_seq_len - 2)]

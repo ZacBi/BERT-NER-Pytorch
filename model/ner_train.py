@@ -7,8 +7,6 @@ Attention: 1.remove the usage of XLM;
            2. the reason why not reach SOTA maybe the tokenizer?
 
 """
-# TODO: study the doc
-# TODO: save the best performance checkpoint and test on test file finally
 
 import logging
 import os
@@ -33,15 +31,6 @@ from pytorch_transformers import (WEIGHTS_NAME, BertConfig,
 from pytorch_transformers import AdamW, WarmupLinearSchedule
 
 sys.path.append('/home/ubuntu/workspace/github/ERNIE-NER-Pytorch')
-
-# os.environ[
-#     'TASK_DATA_PATH'] = '/home/ubuntu/workspace/github/BERT-NER-Pytorch/data/msra_ner'
-# os.environ[
-#     'MODEL_PATH'] = '/home/ubuntu/workspace/data/model-zoo/ernie_base_128_pytorch'
-# os.environ[
-#     'OUTPUT_DIR'] = '/home/ubuntu/workspace/github/BERT-NER-Pytorch/outputs'
-# os.environ[
-#     'WORKSPACE'] = '/home/ubuntu/workspace/github/BERT-NER-Pytorch/model'
 
 from model.dataprocess import *
 from model.sequence_eval import *
@@ -93,7 +82,6 @@ def train(args, train_dataset, model, tokenizer):
         ) // args.gradient_accumulation_steps * args.num_train_epochs
 
     # Prepare optimizer and schedule (linear warmup and decay)
-    # TODO: maybe no_decay is empty in ernie of paddle version,
     # so here we define no_decay as None
     no_decay = ['bias', 'LayerNorm.weight']
     # n: name, p: para, nd: no_decay
@@ -115,7 +103,6 @@ def train(args, train_dataset, model, tokenizer):
     optimizer = AdamW(optimizer_grouped_parameters,
                       lr=args.learning_rate,
                       eps=args.adam_epsilon)
-    # TODO: learn about shceduler
     scheduler = WarmupLinearSchedule(optimizer,
                                      warmup_steps=args.warmup_steps,
                                      t_total=t_total)
@@ -144,7 +131,6 @@ def train(args, train_dataset, model, tokenizer):
                 args.gradient_accumulation_steps)
     logger.info("  Total optimization steps = %d", t_total)
 
-    # TODO: what's the difference between t_total and global_step?
     global_step = 0
     # tr_loss: train loss
     tr_loss, logging_loss = 0.0, 0.0
@@ -163,7 +149,6 @@ def train(args, train_dataset, model, tokenizer):
             model.train()
             # Q: why use tuple rather than list?
             batch = tuple(t.to(args.device) for t in batch)
-            # FIXME: change the inputs to suit MSRA-NER
             inputs = {
                 'input_ids': batch[0],
                 'attention_mask': batch[1],
@@ -347,7 +332,6 @@ def load_and_cache_examples(args,
         features = torch.load(cached_features_file)
     else:
         logger.info(f"Creating features from dataset file at {input_file}")
-        # TODO: [x] modify read_ner_examples()
         examples, label_list = read_ner_examples(task_name=args.task_name,
                                                  input_file=input_file,
                                                  is_training=not evaluate)
@@ -466,7 +450,6 @@ def main(args):
 
     # Training
     if args.do_train:
-        # TODO: modify the func below
         train_dataset = load_and_cache_examples(args,
                                                 tokenizer,
                                                 evaluate=False,

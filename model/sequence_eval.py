@@ -30,8 +30,6 @@ import paddle.fluid as fluid
 import torch
 from torch.utils.data import TensorDataset, SequentialSampler, DataLoader
 
-# from model.ernie import ErnieModel
-
 
 # TODO: a temporary func, annotate it when indeed
 def output_correct_example(data_dir):

@@ -34,15 +34,6 @@ from pytorch_transformers import AdamW, WarmupLinearSchedule
 
 sys.path.append('/home/ubuntu/workspace/github/ERNIE-NER-Pytorch')
 
-# os.environ[
-#     'TASK_DATA_PATH'] = '/home/ubuntu/workspace/github/BERT-NER-Pytorch/data/msra_ner'
-# os.environ[
-#     'MODEL_PATH'] = '/home/ubuntu/workspace/data/model-zoo/ernie_base_128_pytorch'
-# os.environ[
-#     'OUTPUT_DIR'] = '/home/ubuntu/workspace/github/BERT-NER-Pytorch/outputs'
-# os.environ[
-#     'WORKSPACE'] = '/home/ubuntu/workspace/github/BERT-NER-Pytorch/model'
-
 from model.dataprocess import *
 from model.sequence_eval import *
 from model.args import get_train_args
